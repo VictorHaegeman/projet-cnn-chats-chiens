@@ -1,18 +1,30 @@
-# Dataset : trop lourd pour GitHub, a telecharger separement
+# Dataset: too large for GitHub, downloaded separately (see README)
 cats_and_dogs_filtered/
 *.zip
 __MACOSX/
 
-# Fichiers temporaires Jupyter / Python
+# Office temporary lock files
+~$*
+
+# Jupyter / Python
 .ipynb_checkpoints/
 __pycache__/
 *.pyc
 
-# Environnements virtuels
+# Virtual environments
 venv/
 .venv/
 env/
 
-# Systeme
+# Editor and AI tooling
+.cursor/
+.claude/
+.agents/
+.jolli/
+.mcp.json
+.vscode/
+.idea/
+
+# OS
 .DS_Store
 Thumbs.db

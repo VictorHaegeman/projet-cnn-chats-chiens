@@ -1,66 +1,66 @@
-# Classification d'images chats / chiens avec un CNN
+# Cats vs. Dogs Image Classification with a CNN
 
-Projet du cours **ST2AIM — AI and Machine Learning for IT Engineers** (EFREI, ING2).
-Construction, entraînement et évaluation d'un réseau de neurones convolutif (CNN) qui
-distingue une photo de chat d'une photo de chien.
+Project for **ST2AIM — AI and Machine Learning for IT Engineers** (EFREI, ING2).
+Building, training and evaluating a convolutional neural network that classifies photographs of
+cats and dogs, then improving it with two regularisation strategies.
 
-## Contenu
+## Contents
 
-| Fichier | Description |
+| File | Description |
 |---|---|
-| `Projet_CNN_Chats_Chiens.ipynb` | Le notebook complet, avec le code, les sorties et les commentaires |
-| `Presentation_CNN_Chats_Chiens.pptx` | Support de la soutenance (10 min) |
-| `ST2AIM___Project.pdf` | Le sujet du projet |
+| `Projet_CNN_Cats_Dogs.ipynb` | Full notebook: code, outputs and answers to every question of the brief |
+| `Presentation_CNN_Cats_Dogs.pptx` | Slides for the 10-minute defence (speaker notes included) |
+| `Oral_Script.md` | Timed speaking script and prepared answers to likely questions |
+| `ST2AIM___Project.pdf` | The assignment brief |
 
-## Données
+## Data
 
-Dataset `cats_and_dogs_filtered` (2000 images d'entraînement, 1000 de validation),
-**non versionné** car trop lourd pour GitHub. À télécharger et à placer à la racine du projet :
+`cats_and_dogs_filtered` — 2,000 training images and 1,000 validation images, perfectly balanced.
+**Not versioned** (too large for GitHub). Download it and place it at the root of the project:
 
 ```
 Projet/
-├── Projet_CNN_Chats_Chiens.ipynb
+├── Projet_CNN_Cats_Dogs.ipynb
 └── cats_and_dogs_filtered/
     ├── train/       (cats/ + dogs/)
     └── validation/  (cats/ + dogs/)
 ```
 
-Source : https://storage.googleapis.com/mledu-datasets/cats_and_dogs_filtered.zip
+Source: https://storage.googleapis.com/mledu-datasets/cats_and_dogs_filtered.zip
 
-## Méthode
+## Method
 
-- Images redimensionnées en 150 × 150 × 3, pixels normalisés dans [0, 1]
-- Split 80/20 du dossier `train` : 1600 images d'entraînement, 400 de test
-- Architecture : 4 blocs `Conv2D` + `MaxPooling2D` (32 / 64 / 128 / 128 filtres, ReLU),
-  puis `Flatten` → `Dense(128)` → `Dense(1, sigmoid)`
-- **1 043 905 paramètres**, calculés à la main puis vérifiés avec `model.summary()`
-- Optimiseur Adam (1e-3), perte `binary_crossentropy`, 15 epochs, batchs de 100
+- Images resized to 150 × 150 × 3, pixels rescaled to [0, 1] inside the model
+- 80/20 split of the `train` directory: 1,600 training images, 400 held-out test images
+- Architecture: 4 × (`Conv2D` + ReLU + `MaxPooling2D`) with 32 / 64 / 128 / 128 filters,
+  then `Flatten` → `Dense(128)` → `Dense(1, sigmoid)`
+- **1,043,905 parameters**, computed by hand and verified against `model.summary()`
+- Adam (1e-3), `binary_crossentropy`, 15 epochs, batch size 100 (16 batches per epoch)
 
-## Résultats (sur les 400 images de test)
+## Results (400 held-out test images)
 
-| Modèle | Accuracy | F1-score | Écart train / validation |
-|---|---|---|---|
-| A — CNN simple | 0,728 | 0,712 | 0,179 (sur-apprentissage net) |
-| B — data augmentation | 0,750 | 0,789 | 0,009 |
-| C — dropout + batch normalization | **0,780** | **0,810** | 0,085 |
+| Model | Accuracy | Precision | Recall | F1 | Train/val gap |
+|---|---|---|---|---|---|
+| A — baseline CNN | 0.728 | 0.839 | 0.619 | 0.712 | 0.179 |
+| B — data augmentation | 0.750 | 0.730 | 0.858 | 0.789 | **0.009** |
+| C — dropout + batch normalization | **0.780** | 0.766 | 0.858 | **0.810** | 0.085 |
 
-Le modèle de base sur-apprend clairement. La data augmentation supprime presque
-totalement l'écart entre les deux courbes ; le duo dropout + batch normalization
-donne la meilleure accuracy finale.
+The baseline overfits: its validation loss bottoms out at epoch 13 and rises afterwards while the
+training loss keeps falling. Augmentation almost eliminates the generalisation gap; dropout combined
+with batch normalization reaches the best final score. A transfer-learning bonus with a frozen
+MobileNetV2 backbone is included in the notebook.
 
-Un bonus de *transfer learning* avec MobileNetV2 (backbone gelé) est inclus dans le notebook.
-
-## Lancer le projet
+## Running the project
 
 ```bash
 pip install tensorflow scikit-learn matplotlib pandas notebook
-jupyter notebook Projet_CNN_Chats_Chiens.ipynb
+jupyter notebook Projet_CNN_Cats_Dogs.ipynb
 ```
 
-Comptez une vingtaine de minutes pour réexécuter l'ensemble sur un CPU.
+A full re-run takes roughly 20 minutes on CPU.
 
-## Sources
+## References
 
-- Supports de cours ST2AIM (C1 à C5) — A. Tay, F. Chaieb, H. Kchok, A. Gabis, EFREI
-- [Documentation TensorFlow / Keras](https://www.tensorflow.org/tutorials/images/classification)
-- Sandler et al., *MobileNetV2: Inverted Residuals and Linear Bottlenecks*, CVPR 2018
+- ST2AIM lecture notes, chapters 1–5 — A. Tay, F. Chaieb, H. Kchok, A. Gabis, EFREI
+- [TensorFlow / Keras — Image classification tutorial](https://www.tensorflow.org/tutorials/images/classification)
+- M. Sandler et al., *MobileNetV2: Inverted Residuals and Linear Bottlenecks*, CVPR 2018
